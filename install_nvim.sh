@@ -4,7 +4,7 @@ set -xe
 NVIM_VERSION="0.9.5"
 # NODE_VERSION="18.16.0" # NodeJS LTS
 NODE_VERSION="20.11.0" # NodeJS LTS
-# FZF_VERSION="0.35.0"
+FZF_VERSION="0.52.1"
 # LUA_LSP_VERSION="3.6.4"
 # VSCODE_LLDB_VERSION="1.8.1"
 
@@ -24,7 +24,6 @@ fi
 
 function reset_config_dir {
 	echo "--- (Re)setting Neovim config folder."
-	rm -rf ${NVIM_CONFIG_DIR}
 	rm -rf ${NVIM_SHARE_DIR}
 	rm -rf ${NVIM_STATE_DIR}
 	rm -rf ${NVIM_CACHE_DIR}
@@ -194,14 +193,9 @@ function install_alias {
 
 reset_config_dir
 init_config_dir
-ln -s ${HOME}/.dotfiles/nvim ${HOME}/.config/nvim
 install_deps
 install_neovim
 install_python
 install_node
 install_alias
 source ${HOME}/.profile
-# if [[ $(uname -s) == "Linux" ]]; then
-# 	${SUDO} /usr/sbin/modprobe fuse
-# fi
-# nvim --headless "+Lazy! sync" +qa

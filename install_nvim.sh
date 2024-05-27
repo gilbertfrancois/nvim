@@ -151,6 +151,7 @@ function install_fzf {
 			FZF_ARCH="armv7"
 		fi
 		cd /tmp
+		rm -rf ${FZF_VERSION}/fzf-${FZF_VERSION}-${FZF_OS}_${FZF_ARCH}.${FZF_EXTENSION}
 		wget https://github.com/junegunn/fzf/releases/download/${FZF_VERSION}/fzf-${FZF_VERSION}-${FZF_OS}_${FZF_ARCH}.${FZF_EXTENSION}
 		tar zxvf fzf-${FZF_VERSION}-${FZF_OS}_${FZF_ARCH}.tar.gz
 		${SUDO} cp fzf /usr/local/bin
@@ -180,20 +181,30 @@ function __os_template {
 	fi
 }
 
-function install_alias {
+function install_alias_in_file {
+	FILE_PATH="${HOME}/.${1}"
 	ALIAS="alias nvim='PATH=${HOME}/.local/share/nvim/lib/python/bin:${HOME}/.local/share/nvim/lib/node/bin:/opt/nvim/bin:\${PATH} nvim'"
-	PROFILE_PATH=${HOME}/.profile
-	if grep "alias nvim" ${PROFILE_PATH}; then
-		echo "  - Alias already installed in ${PROFILE_PATH}."
-	else
-		echo ${ALIAS} >>${PROFILE_PATH}
-		echo "  - Alias added to ${PROFILE_PATH}."
+	if [ -f "${FILE_PATH}" ]; then
+		if grep -q "alias nvim" ${FILE_PATH}; then
+			echo "  - Alias for neovim already added to ${FILE_PATH}."
+		else
+			echo ${ALIAS} >> ${FILE_PATH}
+			echo "  - Alias for neovim added to ${FILE_PATH}."
+		fi
 	fi
+}
+
+function install_alias {
+	install_alias_in_file bashrc
+	install_alias_in_file bash_profile
+	install_alias_in_file profile
+	install_alias_in_file zshrc
 }
 
 reset_config_dir
 init_config_dir
 install_deps
+install_fzf
 install_neovim
 install_python
 install_node

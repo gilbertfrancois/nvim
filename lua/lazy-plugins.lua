@@ -28,12 +28,6 @@ require('lazy').setup({
     -- modular approach: using `require 'path/name'` will
     -- include a plugin definition from file lua/path/name.lua
 
-    -- require 'tpope/vim-fugitive',
-    -- require 'tpope/vim-rhubarb',
-    -- require 'tpope/vim-unimpaired',
-    -- require 'tpope/vim-surround',
-    -- require 'tpope/vim-commentary',
-
     require 'kickstart/plugins/gitsigns',
 
     require 'kickstart/plugins/which-key',
@@ -53,6 +47,12 @@ require('lazy').setup({
     require 'kickstart/plugins/mini',
 
     require 'kickstart/plugins/treesitter',
+
+    require 'kickstart/plugins/tpope',
+
+    require 'kickstart/plugins/lazygit',
+
+    require 'kickstart/plugins/copilot',
 
     -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
     -- init.lua. If you want these files, they are in the repository, so you can just download them and

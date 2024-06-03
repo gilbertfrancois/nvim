@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -xe
 
-NVIM_VERSION="0.9.5"
+NVIM_VERSION="0.10.0"
 # NODE_VERSION="18.16.0" # NodeJS LTS
 NODE_VERSION="20.11.0" # NodeJS LTS
 FZF_VERSION="0.52.1"
@@ -152,6 +152,7 @@ function install_fzf {
 		fi
 		cd /tmp
 		rm -rf ${FZF_VERSION}/fzf-${FZF_VERSION}-${FZF_OS}_${FZF_ARCH}.${FZF_EXTENSION}
+		rm -rf fzf
 		wget https://github.com/junegunn/fzf/releases/download/${FZF_VERSION}/fzf-${FZF_VERSION}-${FZF_OS}_${FZF_ARCH}.${FZF_EXTENSION}
 		tar zxvf fzf-${FZF_VERSION}-${FZF_OS}_${FZF_ARCH}.tar.gz
 		${SUDO} cp fzf /usr/local/bin

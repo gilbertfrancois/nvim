@@ -29,6 +29,7 @@ return {
         local dap = require 'dap'
         local dapui = require 'dapui'
         local debugpy_path = require('mason-registry').get_package('debugpy'):get_install_path()
+        local codelldb_path = require('mason-registry').get_package('codelldb'):get_install_path()
 
         require('mason-nvim-dap').setup {
             -- Makes a best effort to setup the various debuggers with
@@ -86,12 +87,12 @@ return {
         dap.adapters.codelldb = {
             type = 'server',
             port = '13000',
-            -- executable = {
-            -- 	command = vim.fn.getenv("HOME") .. "/.local/share/nvim/mason/packages/codelldb/extension/adapter/codelldb",
-            -- 	args = { "--port", "13000" },
-            -- 	-- On windows you may have to uncomment this:
-            -- 	-- detached = false,
-            -- },
+            executable = {
+                command = codelldb_path .. '/codelldb',
+                args = { '--port', '13000' },
+                -- On windows you may have to uncomment this:
+                -- detached = false,
+            },
         }
 
         dap.configurations.cpp = {

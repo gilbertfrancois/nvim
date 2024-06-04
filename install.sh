@@ -2,11 +2,8 @@
 set -xe
 
 NVIM_VERSION="0.10.0"
-# NODE_VERSION="18.16.0" # NodeJS LTS
 NODE_VERSION="20.11.0" # NodeJS LTS
 FZF_VERSION="0.52.1"
-# LUA_LSP_VERSION="3.6.4"
-# VSCODE_LLDB_VERSION="1.8.1"
 
 NVIM_CONFIG_DIR=${HOME}/.config/nvim
 NVIM_SHARE_DIR=${HOME}/.local/share/nvim
@@ -99,7 +96,34 @@ function install_python {
 	pip install neovim
 }
 
+function check_libc_version {
+	required_version="2.28"
+	# Extract version from ldd output
+	ldd_output=$(ldd --version)
+	current_version=$(echo "$ldd_output" | grep -oP '\b\d+\.\d+\b' | head -1)
+	version_compare() {
+		local version1=(${1//./ })
+		local version2=(${2//./ })
+		for ((i = 0; i < ${#version1[@]}; i++)); do
+			if [[ ${version1[i]} -lt ${version2[i]} ]]; then
+				return 1
+			elif [[ ${version1[i]} -gt ${version2[i]} ]]; then
+				return 0
+			fi
+		done
+		return 0
+	}
+	if version_compare "$current_version" "$required_version"; then
+		echo "Current version $current_version is high enough."
+	else
+		echo "Current libc version $current_version is not high enough for NodeJS $NODE_VERSION. Lowering NodeJS version to 16."
+		NODE_VERSION="16.20.2" # NodeJS for Ubuntu 18.04
+	fi
+}
+
 function install_node {
+	check_libc_version
+	echo "Using NodeJS version: ${NODE_VERSION}"
 	INSTALL_DIR=${NVIM_LIB_DIR}
 	echo "--- Installing nodejs."
 	if [[ $(uname -s) == "Linux" ]]; then
@@ -208,6 +232,7 @@ install_deps
 install_fzf
 install_neovim
 install_python
+check_libc_version
 install_node
 install_alias
 source ${HOME}/.profile

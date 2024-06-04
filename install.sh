@@ -48,6 +48,22 @@ function install_deps {
 	fi
 }
 
+function compile_neovim {
+	echo "--- Compiling Neovim."
+	if [[ $(uname -s) == "Linux" ]]; then
+		${SUDO} apt install -y ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip
+	elif [[ $(uname -s) == "Darwin" ]]; then
+		brew reinstall ninja gettext libtool autoconf automake cmake pkg-config unzip
+	fi
+	pushd /tmp
+	git clone https://github.com/neovim/neovim.git --branch v${NVIM_VERSION} --depth 1
+	cd neovim
+	make CMAKE_BUILD_TYPE=Release CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX:PATH=/opt/nvim"
+	${SUDO} make install
+	popd
+	rm -rf /tmp/file.txt
+}
+
 function install_neovim {
 	echo "--- Installing Neovim."
 	if [[ $(uname -s) == "Linux" ]]; then
@@ -60,10 +76,10 @@ function install_neovim {
 			${SUDO} rm -rf nvim-linux64.tar.gz
 		elif [[ $(uname -m) == "aarch64" ]]; then
 			${SUDO} apt install -y libuv1 lua-luv-dev lua-lpeg-dev
-			echo "Build Neovim from source."
+			compile_neovim
 		elif [[ $(uname -m) == "armv7l" ]]; then
 			${SUDO} apt install -y libuv1 lua-luv-dev lua-lpeg-dev
-			echo "Build Neovim from source."
+			compile_neovim
 		fi
 	elif [[ $(uname -s) == "Darwin" ]]; then
 		brew update
@@ -97,6 +113,9 @@ function install_python {
 }
 
 function check_libc_version {
+	if [[ $(uname -s) == "Darwin" ]]; then
+		return
+	fi
 	required_version="2.28"
 	# Extract version from ldd output
 	ldd_output=$(ldd --version)
@@ -107,7 +126,7 @@ function check_libc_version {
 		for ((i = 0; i < ${#version1[@]}; i++)); do
 			if [[ ${version1[i]} -lt ${version2[i]} ]]; then
 				return 1
-			elif [[ ${version1[i]} -gt ${version2[i]} ]]; then
+			elif [[ ${version1[i]} -ge ${version2[i]} ]]; then
 				return 0
 			fi
 		done

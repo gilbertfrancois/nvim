@@ -156,7 +156,17 @@ return {
             --  - settings (table): Override the default settings passed when initializing the server.
             --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
             local servers = {
-                clangd = {},
+                clangd = {
+                    -- Fixes offset encoding issues with clangd.
+                    default_capabilities = {
+                        -- textDocument = {
+                        --     completion = {
+                        --         editsNearCursor = true,
+                        --     },
+                        -- },
+                        offsetEncoding = 'utf-16',
+                    },
+                },
                 pyright = {},
                 tsserver = {},
 

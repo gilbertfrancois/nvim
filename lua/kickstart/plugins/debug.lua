@@ -1,35 +1,18 @@
--- debug.lua
---
--- Shows how to use the DAP plugin to debug your code.
---
--- Primarily focused on configuring the debugger for Go, but can
--- be extended to other languages as well. That's why it's called
--- kickstart.nvim and not kitchen-sink.nvim ;)
-
 return {
-    -- NOTE: Yes, you can install new plugins here!
     'mfussenegger/nvim-dap',
-    -- NOTE: And you can specify dependencies as well
     dependencies = {
-        -- Creates a beautiful debugger UI
         'rcarriga/nvim-dap-ui',
-        -- Required dependency for nvim-dap-ui
         'nvim-neotest/nvim-nio',
-
-        -- Installs the debug adapters for you
+        'theHamsta/nvim-dap-virtual-text',
         'williamboman/mason.nvim',
         'jay-babu/mason-nvim-dap.nvim',
 
-        -- Add your own debuggers here
-        -- 'leoluz/nvim-dap-go',
+        -- Language specific debuggers
         'mfussenegger/nvim-dap-python',
-        'theHamsta/nvim-dap-virtual-text',
     },
     config = function()
         local dap = require 'dap'
         local dapui = require 'dapui'
-        local debugpy_path = require('mason-registry').get_package('debugpy'):get_install_path()
-        local codelldb_path = require('mason-registry').get_package('codelldb'):get_install_path()
 
         require('mason-nvim-dap').setup {
             -- Makes a best effort to setup the various debuggers with
@@ -48,10 +31,6 @@ return {
                 'codelldb',
             },
         }
-        require('dap-python').setup(debugpy_path .. '/venv/bin/python')
-        table.insert(dap.configurations.python, {
-            justMyCode = false,
-        })
 
         -- Basic debugging keymaps, feel free to change to your liking!
         vim.keymap.set('n', '<F1>', dap.continue, { desc = 'Debug: Start/Continue' })
@@ -66,35 +45,120 @@ return {
         vim.keymap.set('n', '<leader>B', function()
             dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')
         end, { desc = 'Debug: Set Breakpoint' })
-
-        -- Dap UI setup
-        -- For more information, see |:help nvim-dap-ui|
-        dapui.setup {
-            -- icons = { expanded = '▾', collapsed = '▸', current_frame = '*' },
-        }
-
-        -- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
+        vim.keymap.set('n', '<leader>?', function()
+            dapui.eval(nil, { enter = true })
+        end, { desc = 'Debug: Evaluate expression' })
 
         dap.listeners.before.attach.dapui_config = dapui.open
         dap.listeners.before.launch.dapui_config = dapui.open
         dap.listeners.before.event_terminated.dapui_config = dapui.close
         dap.listeners.before.event_exited.dapui_config = dapui.close
-
         -- dap.listeners.after.event_initialized.dapui_config = dapui.open
 
+        -- Virtual text setup
         require('nvim-dap-virtual-text').setup {}
 
+        -- Dap UI setup
+        -- For more information, see |:help nvim-dap-ui|
+        dapui.setup {
+            {
+                controls = {
+                    element = 'repl',
+                    enabled = true,
+                    icons = {
+                        disconnect = '',
+                        pause = '',
+                        play = '',
+                        run_last = '',
+                        step_back = '',
+                        step_into = '',
+                        step_out = '',
+                        step_over = '',
+                        terminate = '',
+                    },
+                },
+                element_mappings = {},
+                expand_lines = true,
+                floating = {
+                    border = 'single',
+                    mappings = {
+                        close = { 'q', '<Esc>' },
+                    },
+                },
+                force_buffers = true,
+                icons = {
+                    collapsed = '',
+                    current_frame = '',
+                    expanded = '',
+                },
+                layouts = {
+                    {
+                        elements = {
+                            {
+                                id = 'scopes',
+                                size = 0.25,
+                            },
+                            {
+                                id = 'breakpoints',
+                                size = 0.25,
+                            },
+                            {
+                                id = 'stacks',
+                                size = 0.25,
+                            },
+                            {
+                                id = 'watches',
+                                size = 0.25,
+                            },
+                        },
+                        position = 'left',
+                        size = 40,
+                    },
+                    {
+                        elements = {
+                            {
+                                id = 'repl',
+                                size = 0.5,
+                            },
+                            {
+                                id = 'console',
+                                size = 0.5,
+                            },
+                        },
+                        position = 'bottom',
+                        size = 10,
+                    },
+                },
+                mappings = {
+                    edit = 'e',
+                    expand = { '<CR>', '<2-LeftMouse>' },
+                    open = 'o',
+                    remove = 'd',
+                    repl = 'r',
+                    toggle = 't',
+                },
+                render = {
+                    indent = 1,
+                    max_value_lines = 100,
+                },
+            },
+        }
+        -- Python debugging setup
+        local debugpy_path = require('mason-registry').get_package('debugpy'):get_install_path()
+        require('dap-python').setup(debugpy_path .. '/venv/bin/python')
+        table.insert(dap.configurations.python, {
+            justMyCode = false,
+        })
+        -- C++ debugging setup
+        local codelldb_path = require('mason-registry').get_package('codelldb'):get_install_path()
         dap.adapters.codelldb = {
             type = 'server',
             port = '13000',
             executable = {
                 command = codelldb_path .. '/codelldb',
                 args = { '--port', '13000' },
-                -- On windows you may have to uncomment this:
-                -- detached = false,
             },
         }
-
         dap.configurations.cpp = {
             {
                 name = 'Launch',

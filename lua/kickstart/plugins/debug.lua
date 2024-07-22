@@ -1,13 +1,19 @@
 return {
+    -- NOTE: Yes, you can install new plugins here!
     'mfussenegger/nvim-dap',
+    -- NOTE: And you can specify dependencies as well
     dependencies = {
+        -- Creates a beautiful debugger UI
         'rcarriga/nvim-dap-ui',
+        -- Required dependency for nvim-dap-ui
         'nvim-neotest/nvim-nio',
         'theHamsta/nvim-dap-virtual-text',
+        -- Installs the debug adapters for you
         'williamboman/mason.nvim',
         'jay-babu/mason-nvim-dap.nvim',
 
         -- Language specific debuggers
+        -- Add your own debuggers here
         'mfussenegger/nvim-dap-python',
     },
     config = function()
@@ -34,11 +40,11 @@ return {
 
         -- Basic debugging keymaps, feel free to change to your liking!
         vim.keymap.set('n', '<F1>', dap.continue, { desc = 'Debug: Start/Continue' })
-        vim.keymap.set('n', '<F6>', dap.terminate, { desc = 'Debug: Stop' })
         vim.keymap.set('n', '<F2>', dap.step_into, { desc = 'Debug: Step into' })
         vim.keymap.set('n', '<F3>', dap.step_over, { desc = 'Debug: Step over' })
         vim.keymap.set('n', '<F4>', dap.step_out, { desc = 'Debug: Step out' })
         vim.keymap.set('n', '<F5>', dap.step_back, { desc = 'Debug: Step back' })
+        vim.keymap.set('n', '<F6>', dap.terminate, { desc = 'Debug: Stop' })
         vim.keymap.set('n', '<F7>', dapui.toggle, { desc = 'Debug: See last session result.' })
         -- vim.keymap.set('n', '<F10>', dap.run_last, { desc = 'Debug: Run last' })
         vim.keymap.set('n', '<leader>b', dap.toggle_breakpoint, { desc = 'Debug: Toggle breakpoint' })

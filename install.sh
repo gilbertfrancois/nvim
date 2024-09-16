@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -xe
 
-NVIM_VERSION="0.10.0"
+NVIM_VERSION="0.10.1"
 NODE_VERSION="20.11.0" # NodeJS LTS
 FZF_VERSION="0.52.1"
 
@@ -34,6 +34,18 @@ function init_config_dir {
     mkdir -p ${HOME}/.config
     mkdir -p ${NVIM_SHARE_DIR}
     mkdir -p ${NVIM_LIB_DIR}
+}
+
+function install_deps {
+    echo "--- Installing additional dependencies."
+    # TODO: Install version for ARMv8
+    if [[ $(uname -s) == "Linux" ]]; then
+        echo "No additional dependencies to install on Linux."
+        ${SUDO} apt update
+        ${SUDO} apt install -y git wget build-essential unzip
+    elif [[ $(uname -s) == "Darwin" ]]; then
+        echo "No additional dependencies to install on macOS."
+    fi
 }
 
 function compile_neovim {
@@ -91,7 +103,7 @@ function install_python {
     VENV_PATH="${NVIM_LIB_DIR}/python"
     rm -rf ${VENV_PATH}
     cd ${NVIM_LIB_DIR}
-    python3 -m venv ${VENV_PATH}
+    python3 -m venv --copies ${VENV_PATH}
     source ${VENV_PATH}/bin/activate
     # Avoid problems due to outdated pip.
     pip install --upgrade pip

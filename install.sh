@@ -249,8 +249,8 @@ reset_config_dir
 init_config_dir
 install_fzf
 install_neovim
-# install_python
+install_python
 check_libc_version
-# install_node
+install_node
 install_alias
 source ${HOME}/.profile

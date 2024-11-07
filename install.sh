@@ -51,7 +51,7 @@ function install_deps {
 function compile_neovim {
     echo "--- Compiling Neovim."
     if [[ $(uname -s) == "Linux" ]]; then
-        ${SUDO} apt install -y ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip
+        ${SUDO} apt install -y ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip curl build-essential
     elif [[ $(uname -s) == "Darwin" ]]; then
         brew reinstall ninja gettext libtool autoconf automake cmake pkg-config unzip
     fi

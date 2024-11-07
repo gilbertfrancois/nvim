@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -xe
 
-NVIM_VERSION="0.10.1"
-NODE_VERSION="20.11.0" # NodeJS LTS
-FZF_VERSION="0.52.1"
+NVIM_VERSION="0.10.2"
+NODE_VERSION="22.11.0" # NodeJS LTS
+FZF_VERSION="0.56.0"
 
 NVIM_CONFIG_DIR=${HOME}/.config/nvim
 NVIM_SHARE_DIR=${HOME}/.local/share/nvim

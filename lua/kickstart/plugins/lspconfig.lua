@@ -244,6 +244,7 @@ return {
                 'clangd',
                 'codelldb',
                 'debugpy',
+                'tree-sitter-cli',
                 'typescript-language-server',
                 'docker-compose-language-service',
                 'dockerfile-language-server',

@@ -1,3 +1,4 @@
+local mason_path = vim.fn.stdpath("data") .. "/mason/bin/sql-formatter"
 return {
     { -- Autoformat
         'stevearc/conform.nvim',
@@ -30,6 +31,7 @@ return {
             --         lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
             --     }
             -- end,
+
             formatters_by_ft = {
                 lua = { 'stylua' },
                 python = { 'isort', 'black' },
@@ -49,6 +51,8 @@ return {
                 yaml = { 'prettier' },
                 markdown = { 'prettier' },
                 graphql = { 'prettier' },
+                sql = { 'sql-formatter' },
+                -- sql = {"sql_formatter"}
                 -- Conform can also run multiple formatters sequentially
                 -- python = { "isort", "black" },
                 --

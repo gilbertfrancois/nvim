@@ -203,8 +203,6 @@ return {
                 --     },
                 -- },
                 pyright = {},
-                tsserver = {},
-
                 lua_ls = {
                     -- cmd = {...},
                     -- filetypes = { ...},
@@ -248,6 +246,7 @@ return {
                 'typescript-language-server',
                 'docker-compose-language-service',
                 'dockerfile-language-server',
+                'sql-formatter',
             })
             require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 

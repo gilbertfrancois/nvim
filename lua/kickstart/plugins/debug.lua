@@ -1,7 +1,5 @@
 return {
-    -- NOTE: Yes, you can install new plugins here!
     'mfussenegger/nvim-dap',
-    -- NOTE: And you can specify dependencies as well
     dependencies = {
         -- Creates a beautiful debugger UI
         'rcarriga/nvim-dap-ui',
@@ -152,11 +150,56 @@ return {
         -- Python debugging setup
         local debugpy_path = require('mason-registry').get_package('debugpy'):get_install_path()
         require('dap-python').setup(debugpy_path .. '/venv/bin/python')
-        table.insert(dap.configurations.python, {
-            justMyCode = false,
-        })
+        dap.adapters.python = {
+            type = 'server',
+            host = 'localhost',
+            port = 5678,
+            options = {
+                source_filetype = 'python',
+            },
+        }
+        dap.configurations.python = {
+            {
+                type = 'python',
+                request = 'attach',
+                connect = {
+                    host = 'localhost',
+                    port = 5678,
+                },
+                mode = 'remote',
+                name = 'Attach to Docker python /ava-x/genesis/components',
+                redirectOutput = true,
+                justMyCode = true,
+                pathMappings = {
+                    {
+                        localRoot = '/home/gilbert/ava-x/genesis/components/',
+                        remoteRoot = '/ava-x/genesis/components',
+                    },
+                },
+            },
+            {
+                type = 'python',
+                request = 'attach',
+                connect = {
+                    host = 'localhost',
+                    port = 5678,
+                },
+                mode = 'remote',
+                name = 'Attach to Docker python /app',
+                redirectOutput = true,
+                justMyCode = true,
+                pathMappings = {
+                    {
+                        localRoot = vim.fn.getcwd(),
+                        remoteRoot = '/app',
+                    },
+                },
+            },
+        }
+
         -- C++ debugging setup
         local codelldb_path = require('mason-registry').get_package('codelldb'):get_install_path()
+
         dap.adapters.codelldb = {
             type = 'server',
             port = '13000',

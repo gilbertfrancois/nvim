@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -xe
 
-NVIM_VERSION="0.10.2"
-NODE_VERSION="22.11.0" # NodeJS LTS
-FZF_VERSION="0.56.0"
+NVIM_VERSION="0.10.4"
+NODE_VERSION="22.14.0" # NodeJS LTS
+FZF_VERSION="0.60.2"
 
 NVIM_CONFIG_DIR=${HOME}/.config/nvim
 NVIM_SHARE_DIR=${HOME}/.local/share/nvim
@@ -70,10 +70,10 @@ function install_neovim {
         if [[ $(uname -m) == "x86_64" ]]; then
             ${SUDO} rm -rf /opt/nvim
             cd /tmp
-            wget https://github.com/neovim/neovim/releases/download/v${NVIM_VERSION}/nvim-linux64.tar.gz
-            tar zxvf nvim-linux64.tar.gz
-            ${SUDO} mv nvim-linux64 /opt/nvim
-            ${SUDO} rm -rf nvim-linux64.tar.gz
+            wget https://github.com/neovim/neovim/releases/download/v${NVIM_VERSION}/nvim-linux-x86_64.tar.gz
+            tar zxvf nvim-linux-x86_64.tar.gz
+            ${SUDO} mv nvim-linux-x86_64 /opt/nvim
+            ${SUDO} rm -rf nvim-linux-x86_64.tar.gz
         elif [[ $(uname -m) == "aarch64" ]]; then
             ${SUDO} apt install -y libuv1 lua-luv-dev lua-lpeg-dev
             compile_neovim
@@ -252,5 +252,5 @@ install_neovim
 install_python
 check_libc_version
 install_node
-install_alias
+# install_alias
 source ${HOME}/.profile

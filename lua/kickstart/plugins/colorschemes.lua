@@ -1,5 +1,8 @@
 return {
     {
+        'Th3Whit3Wolf/space-nvim'
+    },
+    {
         'navarasu/onedark.nvim',
         priority = 1000,
         opts = {

@@ -1,12 +1,13 @@
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
--- Clear highlights on search when pressing <Esc> in normal mode
---  See `:help hlsearch`
+-- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = true
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
@@ -33,11 +34,10 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
--- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
-vim.keymap.set('n', '<C-S-h>', '<C-w>H', { desc = 'Move window to the left' })
-vim.keymap.set('n', '<C-S-l>', '<C-w>L', { desc = 'Move window to the right' })
-vim.keymap.set('n', '<C-S-j>', '<C-w>J', { desc = 'Move window to the lower' })
-vim.keymap.set('n', '<C-S-k>', '<C-w>K', { desc = 'Move window to the upper' })
+vim.keymap.set('n', '<M-h>', '<C-w>5<', { desc = 'Move split to the left' })
+vim.keymap.set('n', '<M-l>', '<C-w>5>', { desc = 'Move split to the right' })
+vim.keymap.set('n', '<M-j>', '<C-w>+', { desc = 'Make split taller' })
+vim.keymap.set('n', '<M-k>', '<C-w>-', { desc = 'Make split shorter' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -53,4 +53,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     end,
 })
 
--- vim: ts=2 sts=2 sw=2 et
+-- Copilot keymaps
+vim.keymap.set('i', '<C-y>', 'copilot#Accept("\\<CR>")', { expr = true, replace_keycodes = false })
+vim.g.copilot_no_tab_map = true

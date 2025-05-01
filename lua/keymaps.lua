@@ -52,5 +52,8 @@ vim.api.nvim_create_autocmd('TextYankPost', {
         vim.highlight.on_yank()
     end,
 })
+-- Copilot keymaps
+vim.keymap.set('i', '<C-c><C-y>', 'copilot#Accept("\\<CR>")', { expr = true, replace_keycodes = false })
+vim.g.copilot_no_tab_map = true
 
 -- vim: ts=2 sts=2 sw=2 et

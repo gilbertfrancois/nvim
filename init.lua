@@ -105,5 +105,17 @@ require 'lazy-bootstrap'
 -- [[ Configure and install plugins ]]
 require 'lazy-plugins'
 
+function toggle_background()
+    if vim.o.background == 'dark' then
+        vim.o.background = 'light'
+        vim.api.nvim_set_hl(0, 'Normal', { bg = 'white' })
+    else
+        vim.o.background = 'dark'
+        vim.cmd 'colorscheme default'
+    end
+    print('Background set to ' .. vim.o.background)
+end
+vim.keymap.set('n', '<leader>cc', toggle_background, { noremap = true, silent = true, desc = 'Toggle background and transparency' })
+
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et

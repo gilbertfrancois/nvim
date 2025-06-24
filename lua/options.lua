@@ -89,4 +89,8 @@ vim.opt.confirm = true
 vim.g.python3_host_prog = vim.fn.getenv 'HOME' .. '/.local/share/nvim/lib/python/bin/python3'
 vim.g.node_host_prog = vim.fn.getenv 'HOME' .. '/.local/share/nvim/lib/node/bin/neovim-node-host'
 
+-- vim.cmd 'colorscheme default'
+-- if vim.o.background == 'light' then
+--     vim.api.nvim_set_hl(0, 'Normal', { bg = 'white' })
+-- end
 -- vim: ts=2 sts=2 sw=2 et

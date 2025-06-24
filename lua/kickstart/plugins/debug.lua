@@ -184,7 +184,7 @@ return {
             },
         }
         -- Python debugging setup
-        local debugpy_path = require('mason-registry').get_package('debugpy'):get_install_path()
+        local debugpy_path = vim.fn.exepath 'debugpy'
         require('dap-python').setup(debugpy_path .. '/venv/bin/python')
         dap.adapters.python = {
             type = 'server',
@@ -252,8 +252,7 @@ return {
         }
 
         -- C++ debugging setup
-        local codelldb_path = require('mason-registry').get_package('codelldb'):get_install_path()
-
+        local codelldb_path = vim.fn.exepath 'codelldb'
         dap.adapters.codelldb = {
             type = 'server',
             port = '13000',

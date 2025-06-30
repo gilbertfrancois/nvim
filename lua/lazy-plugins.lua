@@ -35,7 +35,7 @@ require('lazy').setup({
 
     require 'kickstart/plugins/blink-cmp',
 
-    require 'kickstart/plugins/copilot',
+    -- require 'kickstart/plugins/copilot',
 
     require 'kickstart/plugins/todo-comments',
 

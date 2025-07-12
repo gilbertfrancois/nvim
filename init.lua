@@ -108,14 +108,19 @@ require 'lazy-plugins'
 function toggle_background()
     if vim.o.background == 'dark' then
         vim.o.background = 'light'
-        vim.api.nvim_set_hl(0, 'Normal', { bg = 'white' })
+        vim.api.nvim_set_hl(0, 'Normal', { bg = 'white', ctermbg = 'white' })
     else
         vim.o.background = 'dark'
-        vim.cmd 'colorscheme default'
     end
     print('Background set to ' .. vim.o.background)
 end
 vim.keymap.set('n', '<leader>cc', toggle_background, { noremap = true, silent = true, desc = 'Toggle background and transparency' })
 
+vim.cmd.colorscheme 'default'
+-- wait till the event loop is idle, then set the highlight
+vim.defer_fn(function()
+    vim.api.nvim_set_hl(0, 'Normal', { bg = 'white', ctermbg = 'white' })
+end, 0)
+--
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et

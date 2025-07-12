@@ -2,6 +2,8 @@
 -- See `:help vim.opt`
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
+--
+vim.o.termguicolors = true
 
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
@@ -24,7 +26,7 @@ vim.opt.conceallevel = 0
 vim.o.laststatus = 3
 
 -- Set to true if you have a Nerd Font installed
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- Make line numbers default
 vim.opt.number = true
@@ -39,11 +41,21 @@ vim.opt.showmode = false
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
--- vim.schedule(function()
--- vim.opt.clipboard = 'unnamedplus'
-vim.g.clipboard = 'osc52'
+local osc = require('vim.ui.clipboard.osc52')
+vim.g.clipboard = {
+  name = 'osc52+system',
+  copy = { ['+'] = osc.copy('+'), ['*'] = osc.copy('*') },
+  paste = {
+    -- Wayland variant
+    -- ['+'] = { 'wl-paste', '--no-newline' },
+    -- ['*'] = { 'wl-paste', '--no-newline', '--primary' },
+    -- X11 variant (uncomment if you log in under X11)
+    ['+'] = { 'xclip', '-selection', 'clipboard', '-out' },
+    ['*'] = { 'xclip', '-selection', 'primary',   '-out' },
+  },
+  cache_enabled = 0,
+}
 vim.opt.clipboard:append { 'unnamed', 'unnamedplus' } -- use + register by default
--- end)
 
 -- Enable break indent
 vim.opt.breakindent = true
@@ -91,8 +103,4 @@ vim.opt.confirm = true
 vim.g.python3_host_prog = vim.fn.getenv 'HOME' .. '/.local/share/nvim/lib/python/bin/python3'
 vim.g.node_host_prog = vim.fn.getenv 'HOME' .. '/.local/share/nvim/lib/node/bin/neovim-node-host'
 
--- vim.cmd 'colorscheme default'
--- if vim.o.background == 'light' then
---     vim.api.nvim_set_hl(0, 'Normal', { bg = 'white' })
--- end
 -- vim: ts=2 sts=2 sw=2 et

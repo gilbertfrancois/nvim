@@ -37,25 +37,43 @@ vim.opt.number = true
 -- Don't show the mode, since it's already in the status line
 vim.opt.showmode = false
 
--- Sync clipboard between OS and Neovim.
---  Schedule the setting after `UiEnter` because it can increase startup-time.
---  Remove this option if you want your OS clipboard to remain independent.
---  See `:help 'clipboard'`
-local osc = require('vim.ui.clipboard.osc52')
-vim.g.clipboard = {
-  name = 'osc52+system',
-  copy = { ['+'] = osc.copy('+'), ['*'] = osc.copy('*') },
-  paste = {
-    -- Wayland variant
-    -- ['+'] = { 'wl-paste', '--no-newline' },
-    -- ['*'] = { 'wl-paste', '--no-newline', '--primary' },
-    -- X11 variant (uncomment if you log in under X11)
-    ['+'] = { 'xclip', '-selection', 'clipboard', '-out' },
-    ['*'] = { 'xclip', '-selection', 'primary',   '-out' },
-  },
-  cache_enabled = 0,
+local osc = require 'vim.ui.clipboard.osc52'
+local uname = vim.loop.os_uname()
+local os_name = uname.sysname
+
+local clipboard = {
+    name = 'osc52+system',
+    copy = {
+        ['+'] = osc.copy '+',
+        ['*'] = osc.copy '*',
+    },
+    paste = {},
+    cache_enabled = 0,
 }
-vim.opt.clipboard:append { 'unnamed', 'unnamedplus' } -- use + register by default
+
+if os_name == 'Darwin' then
+    -- macOS fallback
+    clipboard.copy['+'] = { 'pbcopy' }
+    clipboard.copy['*'] = { 'pbcopy' }
+    clipboard.paste['+'] = { 'pbpaste' }
+    clipboard.paste['*'] = { 'pbpaste' }
+elseif os_name == 'Linux' then
+    local has_wayland = os.getenv 'WAYLAND_DISPLAY' ~= nil
+    if has_wayland then
+        clipboard.copy['+'] = { 'wl-copy' }
+        clipboard.copy['*'] = { 'wl-copy', '--primary' }
+        clipboard.paste['+'] = { 'wl-paste', '--no-newline' }
+        clipboard.paste['*'] = { 'wl-paste', '--no-newline', '--primary' }
+    else
+        clipboard.copy['+'] = { 'xclip', '-selection', 'clipboard' }
+        clipboard.copy['*'] = { 'xclip', '-selection', 'primary' }
+        clipboard.paste['+'] = { 'xclip', '-selection', 'clipboard', '-out' }
+        clipboard.paste['*'] = { 'xclip', '-selection', 'primary', '-out' }
+    end
+end
+
+vim.g.clipboard = clipboard
+vim.opt.clipboard:append { 'unnamed', 'unnamedplus' }
 
 -- Enable break indent
 vim.opt.breakindent = true

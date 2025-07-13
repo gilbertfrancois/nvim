@@ -37,43 +37,49 @@ vim.opt.number = true
 -- Don't show the mode, since it's already in the status line
 vim.opt.showmode = false
 
+-- Begin clipboard config
+--
 local osc = require 'vim.ui.clipboard.osc52'
 local uname = vim.loop.os_uname()
 local os_name = uname.sysname
 
+-- Check if we're running inside an SSH session
+local is_ssh = os.getenv 'SSH_TTY' ~= nil or os.getenv 'SSH_CONNECTION' ~= nil
+
 local clipboard = {
     name = 'osc52+system',
-    copy = {
-        ['+'] = osc.copy '+',
-        ['*'] = osc.copy '*',
-    },
-    paste = {},
+    copy = { ['+'] = osc.copy '+', ['*'] = osc.copy '*' },
+    paste = { ['+'] = osc.paste '+', ['*'] = osc.paste '*' },
     cache_enabled = 0,
 }
 
-if os_name == 'Darwin' then
-    -- macOS fallback
-    clipboard.copy['+'] = { 'pbcopy' }
-    clipboard.copy['*'] = { 'pbcopy' }
-    clipboard.paste['+'] = { 'pbpaste' }
-    clipboard.paste['*'] = { 'pbpaste' }
-elseif os_name == 'Linux' then
-    local has_wayland = os.getenv 'WAYLAND_DISPLAY' ~= nil
-    if has_wayland then
-        clipboard.copy['+'] = { 'wl-copy' }
-        clipboard.copy['*'] = { 'wl-copy', '--primary' }
-        clipboard.paste['+'] = { 'wl-paste', '--no-newline' }
-        clipboard.paste['*'] = { 'wl-paste', '--no-newline', '--primary' }
-    else
-        clipboard.copy['+'] = { 'xclip', '-selection', 'clipboard' }
-        clipboard.copy['*'] = { 'xclip', '-selection', 'primary' }
-        clipboard.paste['+'] = { 'xclip', '-selection', 'clipboard', '-out' }
-        clipboard.paste['*'] = { 'xclip', '-selection', 'primary', '-out' }
+-- If not SSH (i.e., local session), use system-specific tools for paste (more reliable)
+if not is_ssh then
+    if os_name == 'Darwin' then
+        clipboard.copy['+'] = { 'pbcopy' }
+        clipboard.copy['*'] = { 'pbcopy' }
+        clipboard.paste['+'] = { 'pbpaste' }
+        clipboard.paste['*'] = { 'pbpaste' }
+    elseif os_name == 'Linux' then
+        local has_wayland = os.getenv 'WAYLAND_DISPLAY' ~= nil
+        if has_wayland then
+            clipboard.copy['+'] = { 'wl-copy' }
+            clipboard.copy['*'] = { 'wl-copy', '--primary' }
+            clipboard.paste['+'] = { 'wl-paste', '--no-newline' }
+            clipboard.paste['*'] = { 'wl-paste', '--no-newline', '--primary' }
+        else
+            clipboard.copy['+'] = { 'xclip', '-selection', 'clipboard' }
+            clipboard.copy['*'] = { 'xclip', '-selection', 'primary' }
+            clipboard.paste['+'] = { 'xclip', '-selection', 'clipboard', '-out' }
+            clipboard.paste['*'] = { 'xclip', '-selection', 'primary', '-out' }
+        end
     end
 end
 
 vim.g.clipboard = clipboard
 vim.opt.clipboard:append { 'unnamed', 'unnamedplus' }
+--
+-- end clipboard config
 
 -- Enable break indent
 vim.opt.breakindent = true

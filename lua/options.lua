@@ -56,20 +56,20 @@ local clipboard = {
 -- If not SSH (i.e., local session), use system-specific tools for paste (more reliable)
 if not is_ssh then
     if os_name == 'Darwin' then
-        clipboard.copy['+'] = { 'pbcopy' }
-        clipboard.copy['*'] = { 'pbcopy' }
+        -- clipboard.copy['+'] = { 'pbcopy' }
+        -- clipboard.copy['*'] = { 'pbcopy' }
         clipboard.paste['+'] = { 'pbpaste' }
         clipboard.paste['*'] = { 'pbpaste' }
     elseif os_name == 'Linux' then
         local has_wayland = os.getenv 'WAYLAND_DISPLAY' ~= nil
         if has_wayland then
-            clipboard.copy['+'] = { 'wl-copy' }
-            clipboard.copy['*'] = { 'wl-copy', '--primary' }
+            -- clipboard.copy['+'] = { 'wl-copy' }
+            -- clipboard.copy['*'] = { 'wl-copy', '--primary' }
             clipboard.paste['+'] = { 'wl-paste', '--no-newline' }
             clipboard.paste['*'] = { 'wl-paste', '--no-newline', '--primary' }
         else
-            clipboard.copy['+'] = { 'xclip', '-selection', 'clipboard' }
-            clipboard.copy['*'] = { 'xclip', '-selection', 'primary' }
+            -- clipboard.copy['+'] = { 'xclip', '-selection', 'clipboard' }
+            -- clipboard.copy['*'] = { 'xclip', '-selection', 'primary' }
             clipboard.paste['+'] = { 'xclip', '-selection', 'clipboard', '-out' }
             clipboard.paste['*'] = { 'xclip', '-selection', 'primary', '-out' }
         end

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -xe
 
-NVIM_VERSION="0.11.2"
+NVIM_VERSION="0.11.3"
 NODE_VERSION="22.17.0" # NodeJS LTS
 FZF_VERSION="0.63.0"
 
@@ -24,6 +24,7 @@ function reset_config_dir {
     rm -rf ${NVIM_SHARE_DIR}
     rm -rf ${NVIM_STATE_DIR}
     rm -rf ${NVIM_CACHE_DIR}
+    rm -f lazy-lock.json
     if [[ $(uname -s) == "Linux" ]]; then
         ${SUDO} rm -rf /opt/nvim
         ${SUDO} rm -rf /usr/local/bin/nvim /usr/local/bin/nvim.appimage

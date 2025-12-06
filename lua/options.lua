@@ -21,6 +21,8 @@ vim.opt.expandtab = true
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
 
+-- vim.o.winborder = 'rounded'
+
 vim.opt.conceallevel = 0
 -- Enable global statusbar
 vim.o.laststatus = 3
@@ -124,6 +126,7 @@ vim.opt.scrolloff = 10
 -- See `:help 'confirm'`
 vim.opt.confirm = true
 
+vim.env.PATH = vim.fn.expand '$HOME/.local/share/nvim/lib/node/bin' .. ':' .. vim.env.PATH
 vim.g.python3_host_prog = vim.fn.getenv 'HOME' .. '/.local/share/nvim/lib/python/bin/python3'
 vim.g.node_host_prog = vim.fn.getenv 'HOME' .. '/.local/share/nvim/lib/node/bin/neovim-node-host'
 

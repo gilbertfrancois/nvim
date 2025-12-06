@@ -13,6 +13,8 @@ require('lazy').setup({
     -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
     'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
 
+    'tpope/vim-fugitive',
+
     -- NOTE: Plugins can also be added by using a table,
     -- with the first argument being the link and the following
     -- keys can be used to configure plugin behavior/loading/etc.
@@ -35,11 +37,11 @@ require('lazy').setup({
 
     require 'kickstart/plugins/blink-cmp',
 
-    -- require 'kickstart/plugins/copilot',
+    require 'kickstart/plugins/copilot',
 
-    require 'kickstart/plugins/markdown-render',
+    -- require 'kickstart/plugins/markdown-render',
 
-    -- require 'kickstart/plugins/onedark',
+    require 'kickstart/plugins/onedark',
 
     require 'kickstart/plugins/todo-comments',
 
@@ -76,6 +78,7 @@ require('lazy').setup({
     -- you can continue same window with `<space>sr` which resumes last telescope search
 }, {
     ui = {
+        border = 'rounded',
         icons = {},
         -- If you are using a Nerd Font: set icons to an empty table which will use the
         -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table

@@ -101,89 +101,91 @@ return {
         -- Dap UI setup
         -- For more information, see |:help nvim-dap-ui|
         dapui.setup {
-            {
-                controls = {
-                    element = 'repl',
-                    enabled = true,
-                    icons = {
-                        disconnect = '',
-                        pause = '',
-                        play = '',
-                        run_last = '',
-                        step_back = '',
-                        step_into = '',
-                        step_out = '',
-                        step_over = '',
-                        terminate = '',
-                    },
-                },
-                element_mappings = {},
-                expand_lines = true,
-                floating = {
-                    border = 'single',
-                    mappings = {
-                        close = { 'q', '<Esc>' },
-                    },
-                },
-                force_buffers = true,
+            controls = {
+                element = 'repl',
+                enabled = true,
                 icons = {
-                    collapsed = '',
-                    current_frame = '',
-                    expanded = '',
+                    disconnect = '',
+                    pause = '',
+                    play = '',
+                    run_last = '',
+                    step_back = '',
+                    step_into = '',
+                    step_out = '',
+                    step_over = '',
+                    terminate = '',
                 },
-                layouts = {
-                    {
-                        elements = {
-                            {
-                                id = 'scopes',
-                                size = 0.25,
-                            },
-                            {
-                                id = 'breakpoints',
-                                size = 0.25,
-                            },
-                            {
-                                id = 'stacks',
-                                size = 0.25,
-                            },
-                            {
-                                id = 'watches',
-                                size = 0.25,
-                            },
-                        },
-                        position = 'left',
-                        size = 40,
-                    },
-                    {
-                        elements = {
-                            {
-                                id = 'repl',
-                                size = 0.5,
-                            },
-                            {
-                                id = 'console',
-                                size = 0.5,
-                            },
-                        },
-                        position = 'bottom',
-                        size = 10,
-                    },
-                },
+            },
+            element_mappings = {},
+            expand_lines = true,
+            floating = {
+                border = 'single',
                 mappings = {
-                    edit = 'e',
-                    expand = { '<CR>', '<2-LeftMouse>' },
-                    open = 'o',
-                    remove = 'd',
-                    repl = 'r',
-                    toggle = 't',
+                    close = { 'q', '<Esc>' },
                 },
-                render = {
-                    indent = 1,
-                    max_value_lines = 100,
+            },
+            force_buffers = true,
+            icons = {
+                collapsed = '',
+                current_frame = '',
+                expanded = '',
+            },
+            layouts = {
+                {
+                    elements = {
+                        {
+                            id = 'scopes',
+                            size = 0.25,
+                        },
+                        {
+                            id = 'breakpoints',
+                            size = 0.25,
+                        },
+                        {
+                            id = 'stacks',
+                            size = 0.25,
+                        },
+                        {
+                            id = 'watches',
+                            size = 0.25,
+                        },
+                    },
+                    position = 'left',
+                    size = 40,
                 },
+                {
+                    elements = {
+                        {
+                            id = 'repl',
+                            size = 0.5,
+                        },
+                        {
+                            id = 'console',
+                            size = 0.5,
+                        },
+                    },
+                    position = 'bottom',
+                    size = 10,
+                },
+            },
+            mappings = {
+                edit = 'e',
+                expand = { '<CR>', '<2-LeftMouse>' },
+                open = 'o',
+                remove = 'd',
+                repl = 'r',
+                toggle = 't',
+            },
+            render = {
+                indent = 1,
+                max_value_lines = 100,
             },
         }
         -- Python debugging setup
+        -- local mason_registry = require 'mason-registry'
+        -- local debugpy = mason_registry.get_package 'debugpy'
+        -- local debugpy_python = debugpy:get_install_path() .. '/venv/bin/python'
+        -- require('dap-python').setup(debugpy_python)
         local debugpy_path = vim.fn.exepath 'debugpy'
         require('dap-python').setup(debugpy_path .. '/venv/bin/python')
         dap.adapters.python = {
@@ -197,19 +199,27 @@ return {
         dap.configurations.python = {
             {
                 type = 'python',
+                request = 'launch',
+                name = 'Launch current file',
+                program = '${file}',
+                console = 'integratedTerminal',
+                justMyCode = true,
+            },
+            {
+                type = 'python',
                 request = 'attach',
                 connect = {
                     host = 'localhost',
                     port = 5678,
                 },
                 mode = 'remote',
-                name = 'Attach to Docker python /ava-x/genesis/components',
+                name = 'Attach to Docker instance /ava-x/genesis/components',
                 redirectOutput = true,
                 justMyCode = true,
                 pathMappings = {
                     {
-                        localRoot = '/home/gilbert/ava-x/',
-                        remoteRoot = '/home/gilbert/ava-x/',
+                        localRoot = '/home/gilbert/ava-x/genesis',
+                        remoteRoot = '/ava-x/genesis',
                     },
                 },
             },
@@ -221,31 +231,13 @@ return {
                     port = 5678,
                 },
                 mode = 'remote',
-                name = 'Attach to Docker python /ava-x/genesis/components',
-                redirectOutput = true,
-                justMyCode = true,
-                pathMappings = {
-                    {
-                        localRoot = '/home/gilbert/ava-x/genesis/components/',
-                        remoteRoot = '/ava-x/genesis/components',
-                    },
-                },
-            },
-            {
-                type = 'python',
-                request = 'attach',
-                connect = {
-                    host = 'localhost',
-                    port = 5678,
-                },
-                mode = 'remote',
-                name = 'Attach to Docker python /app',
+                name = 'Attach to Docker python project $(cwd):/workspace',
                 redirectOutput = true,
                 justMyCode = true,
                 pathMappings = {
                     {
                         localRoot = vim.fn.getcwd(),
-                        remoteRoot = '/app',
+                        remoteRoot = '/workspace',
                     },
                 },
             },

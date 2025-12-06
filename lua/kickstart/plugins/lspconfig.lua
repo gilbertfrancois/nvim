@@ -15,11 +15,52 @@ return {
     {
         -- Main LSP Configuration
         'neovim/nvim-lspconfig',
+
+        -- lua/kickstart/plugins/lspconfig.lua  (inside the spec for "neovim/nvim-lspconfig")
+        init = function()
+            local border = 'rounded'
+
+            -- Neovim ≥ 0.11: default border for most floats
+            -- if vim.fn.has 'nvim-0.11' == 1 then
+            --     vim.o.winborder = border
+            -- end
+
+            -- Handler keys for 0.11+ (prevents “deprecated” warning)
+            local M = vim.lsp.protocol.Methods
+            local hover = vim.lsp.handlers.hover
+            local sig = vim.lsp.handlers.signature_help
+            if vim.fn.has 'nvim-0.11' == 1 then
+                vim.lsp.handlers[M.textDocument_hover] = vim.lsp.with(hover, { border = border })
+                vim.lsp.handlers[M.textDocument_signatureHelp] = vim.lsp.with(sig, { border = border })
+            else
+                vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(hover, { border = border })
+                vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(sig, { border = border })
+            end
+
+            -- Fallback: force a border for any LSP float opened via open_floating_preview
+            local orig = vim.lsp.util.open_floating_preview
+            ---@diagnostic disable-next-line: duplicate-set-field
+            function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
+                opts = opts or {}
+                opts.border = opts.border or border
+                return orig(contents, syntax, opts, ...)
+            end
+        end,
+
+        -- -- BEGIN added by GFD
+        -- init = function()
+        --     local border = 'rounded' -- "single" | "double" | "rounded" | "shadow" | "none"
+        --     vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, { border = border })
+        --     -- optional: same border for signature help
+        --     vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = border })
+        -- end,
+        -- -- END added by GFD
+        --
         dependencies = {
             -- Automatically install LSPs and related tools to stdpath for Neovim
             -- Mason must be loaded before its dependents so we need to set it up here.
             -- NOTE: `opts = {}` is the same as calling `require('mason').setup({})`
-            { 'williamboman/mason.nvim', opts = {} },
+            { 'williamboman/mason.nvim', opts = { ui = { border = 'rounded' } } },
             'williamboman/mason-lspconfig.nvim',
             'WhoIsSethDaniel/mason-tool-installer.nvim',
 
@@ -252,7 +293,7 @@ return {
             -- for you, so that they are available from within Neovim.
             local ensure_installed = vim.tbl_keys(servers or {})
             vim.list_extend(ensure_installed, {
-                'stylua',
+                'stylua', -- Used to format Lua code
                 'isort',
                 'black',
                 'clang-format',

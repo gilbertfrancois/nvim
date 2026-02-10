@@ -73,6 +73,8 @@ return {
             only_first_definition = true, -- only show virtual text at first definition (if there are multiple)
             all_references = false, -- show virtual text on all all references of the variable (not only definitions)
             clear_on_continue = false, -- clear virtual text on "continue" (might cause flickering when stepping)
+            max_length = 40, -- default ~80
+            truncate_long_lines = true,
             --- A callback that determines how a variable is displayed or whether it should be omitted
             --- @param variable Variable https://microsoft.github.io/debug-adapter-protocol/specification#Types_Variable
             --- @param buf number
@@ -178,7 +180,7 @@ return {
             },
             render = {
                 indent = 1,
-                max_value_lines = 100,
+                max_value_lines = 5000,
             },
         }
         -- Python debugging setup

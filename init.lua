@@ -105,6 +105,17 @@ require 'lazy-bootstrap'
 -- [[ Configure and install plugins ]]
 require 'lazy-plugins'
 
+vim.api.nvim_create_autocmd('FileType', {
+    -- Added JS, TS, and React patterns
+    pattern = { 'python', 'javascript', 'typescript', 'javascriptreact', 'typescriptreact' },
+    callback = function()
+        vim.opt_local.foldmethod = 'expr'
+        vim.opt_local.foldexpr = 'nvim_treesitter#foldexpr()'
+        -- Ensure files start unfolded so you aren't confused when opening a file
+        vim.opt_local.foldlevel = 99
+    end,
+})
+
 -- vim.cmd [[ colorscheme intellij_light ]]
 
 -- The line beneath this is called `modeline`. See `:help modeline`

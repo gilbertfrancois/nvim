@@ -42,39 +42,37 @@ vim.opt.showmode = false
 -- Begin clipboard config
 --
 local osc = require 'vim.ui.clipboard.osc52'
-local uname = vim.loop.os_uname()
-local os_name = uname.sysname
 
--- Check if we're running inside an SSH session
+-- Detect OS
+local has_wayland = os.getenv 'WAYLAND_DISPLAY' ~= nil
+local is_macos = vim.fn.has 'macunix' == 1
 local is_ssh = os.getenv 'SSH_TTY' ~= nil or os.getenv 'SSH_CONNECTION' ~= nil
 
 local clipboard = {
-    name = 'osc52+system',
-    copy = { ['+'] = osc.copy '+', ['*'] = osc.copy '*' },
-    paste = { ['+'] = osc.paste '+', ['*'] = osc.paste '*' },
-    cache_enabled = 0,
+    name = 'osc52-integrated',
+    copy = {
+        ['+'] = osc.copy '+',
+        ['*'] = osc.copy '*',
+    },
+    -- Default paste to osc52 for remote/fallback
+    paste = {
+        ['+'] = osc.paste '+',
+        ['*'] = osc.paste '*',
+    },
 }
 
--- If not SSH (i.e., local session), use system-specific tools for paste (more reliable)
+-- Overwrite paste with native tools if local (faster/more reliable)
 if not is_ssh then
-    if os_name == 'Darwin' then
-        -- clipboard.copy['+'] = { 'pbcopy' }
-        -- clipboard.copy['*'] = { 'pbcopy' }
+    if is_macos then
         clipboard.paste['+'] = { 'pbpaste' }
         clipboard.paste['*'] = { 'pbpaste' }
-    elseif os_name == 'Linux' then
-        local has_wayland = os.getenv 'WAYLAND_DISPLAY' ~= nil
-        if has_wayland then
-            -- clipboard.copy['+'] = { 'wl-copy' }
-            -- clipboard.copy['*'] = { 'wl-copy', '--primary' }
-            clipboard.paste['+'] = { 'wl-paste', '--no-newline' }
-            clipboard.paste['*'] = { 'wl-paste', '--no-newline', '--primary' }
-        else
-            -- clipboard.copy['+'] = { 'xclip', '-selection', 'clipboard' }
-            -- clipboard.copy['*'] = { 'xclip', '-selection', 'primary' }
-            clipboard.paste['+'] = { 'xclip', '-selection', 'clipboard', '-out' }
-            clipboard.paste['*'] = { 'xclip', '-selection', 'primary', '-out' }
-        end
+    elseif has_wayland then
+        clipboard.paste['+'] = { 'wl-paste', '--no-newline' }
+        clipboard.paste['*'] = { 'wl-paste', '--no-newline', '--primary' }
+    else
+        -- X11 fallback
+        clipboard.paste['+'] = { 'xclip', '-selection', 'clipboard', '-out' }
+        clipboard.paste['*'] = { 'xclip', '-selection', 'primary', '-out' }
     end
 end
 

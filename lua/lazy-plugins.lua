@@ -41,8 +41,6 @@ require('lazy').setup({
 
     -- require 'kickstart/plugins/markdown-render',
 
-    require 'kickstart/plugins/onedark',
-
     require 'kickstart/plugins/todo-comments',
 
     require 'kickstart/plugins/mini',

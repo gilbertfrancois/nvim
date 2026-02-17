@@ -124,7 +124,7 @@ vim.opt.scrolloff = 10
 -- See `:help 'confirm'`
 vim.opt.confirm = true
 
-vim.env.PATH = vim.fn.expand '$HOME/.local/share/nvim/lib/node/bin' .. ':' .. vim.env.PATH
+vim.env.PATH = vim.fn.getenv 'HOME' .. '/.local/share/nvim/lib/node/bin:' .. vim.env.PATH
 vim.g.python3_host_prog = vim.fn.getenv 'HOME' .. '/.local/share/nvim/lib/python/bin/python3'
 vim.g.node_host_prog = vim.fn.getenv 'HOME' .. '/.local/share/nvim/lib/node/bin/neovim-node-host'
 

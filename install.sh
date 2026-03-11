@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -xe
 
+PKGAPP=echo
+
 NVIM_VERSION="0.11.6"
 NODE_VERSION="24.13.1" # NodeJS LTS
 FZF_VERSION="0.67.0"
@@ -42,8 +44,8 @@ function install_deps {
     # TODO: Install version for ARMv8
     if [[ $(uname -s) == "Linux" ]]; then
         echo "No additional dependencies to install on Linux."
-        ${SUDO} apt update
-        ${SUDO} apt install -y git wget build-essential unzip
+        ${SUDO} $PKGAPP update
+        ${SUDO} $PKGAPP install -y git wget build-essential unzip
     elif [[ $(uname -s) == "Darwin" ]]; then
         echo "No additional dependencies to install on macOS."
     fi
@@ -52,7 +54,7 @@ function install_deps {
 function compile_neovim {
     echo "--- Compiling Neovim."
     if [[ $(uname -s) == "Linux" ]]; then
-        ${SUDO} apt install -y ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip curl build-essential
+        ${SUDO} $PKGAPP install -y ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip curl build-essential
     elif [[ $(uname -s) == "Darwin" ]]; then
         brew reinstall ninja gettext libtool autoconf automake cmake pkg-config unzip
     fi
@@ -76,10 +78,10 @@ function install_neovim {
             ${SUDO} mv nvim-linux-x86_64 /opt/nvim
             ${SUDO} rm -rf nvim-linux-x86_64.tar.gz
         elif [[ $(uname -m) == "aarch64" ]]; then
-            ${SUDO} apt install -y libuv1 lua-luv-dev lua-lpeg-dev
+            ${SUDO} $PKGAPP install -y libuv1 lua-luv-dev lua-lpeg-dev
             compile_neovim
         elif [[ $(uname -m) == "armv7l" ]]; then
-            ${SUDO} apt install -y libuv1 lua-luv-dev lua-lpeg-dev
+            ${SUDO} $PKGAPP install -y libuv1 lua-luv-dev lua-lpeg-dev
             compile_neovim
         fi
     elif [[ $(uname -s) == "Darwin" ]]; then
@@ -93,8 +95,8 @@ function install_neovim {
 function install_python {
     echo "--- Installing python environment for NeoVim."
     if [[ $(uname -s) == "Linux" ]]; then
-        ${SUDO} apt update
-        ${SUDO} apt install -y python3-venv
+        ${SUDO} $PKGAPP update
+        ${SUDO} $PKGAPP install -y python3-venv
     elif [[ $(uname -s) == "Darwin" ]]; then
         brew update
         brew reinstall python

@@ -1,5 +1,19 @@
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
+--
+
+-- Enable line wrapping
+vim.opt.wrap = true
+
+-- Don't break words in the middle
+vim.opt.linebreak = true
+
+-- Maintain indent levels on wrapped lines
+vim.opt.breakindent = true
+
+-- Remap 'j' and 'k' to move by visual line rather than logical line
+vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`

@@ -39,7 +39,7 @@ require('lazy').setup({
 
     require 'kickstart/plugins/copilot',
 
-    -- require 'kickstart/plugins/markdown-render',
+    require 'kickstart/plugins/markdown-render',
 
     require 'kickstart/plugins/todo-comments',
 

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-NVIM_VERSION="0.11.6"
-NODE_VERSION="24.13.1" # NodeJS LTS
-FZF_VERSION="0.67.0"
+NVIM_VERSION="0.12.2"
+NODE_VERSION="24.15.0" # NodeJS LTS
+FZF_VERSION="0.72.0"
 
 NVIM_SHARE_DIR=${HOME}/.local/share/nvim
 NVIM_STATE_DIR=${HOME}/.local/state/nvim
@@ -17,7 +17,10 @@ DISTRO="unknown"
 
 if [[ "$OS" == "Linux" ]]; then
     if [[ -f /etc/os-release ]]; then
-        DISTRO=$(. /etc/os-release; echo "$ID")
+        DISTRO=$(
+            . /etc/os-release
+            echo "$ID"
+        )
     fi
     if command -v dnf &>/dev/null; then
         PKGAPP="dnf"

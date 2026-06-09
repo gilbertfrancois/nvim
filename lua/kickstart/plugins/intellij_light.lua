@@ -11,8 +11,6 @@ return {
         'gilbertfrancois/intellij_light.nvim',
         priority = 1000,
         lazy = false,
-        config = function()
-            require('intellij_light').setup()
-        end,
+        -- No config: colors/intellij_light.lua calls setup() when the colorscheme is loaded
     },
 }

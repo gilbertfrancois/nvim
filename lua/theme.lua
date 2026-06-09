@@ -83,7 +83,8 @@ function M.apply()
     if is_light() then
         pcall(vim.cmd.colorscheme, 'intellij_light')
     else
-        pcall(vim.cmd.colorscheme, 'catppuccin')
+        vim.o.background = 'dark'
+        pcall(vim.cmd.colorscheme, 'catppuccin-mocha')
     end
 end
 

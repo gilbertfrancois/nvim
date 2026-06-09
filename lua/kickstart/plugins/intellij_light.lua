@@ -1,16 +1,17 @@
 -- return {
- -- 'intellij_light',
- -- dir = '~/Development/git/intellij_light.nvim',
- -- config = function()
- -- require('intellij_light').setup()
-		-- require('intellij_light').load()
-		-- end,
-		-- }
+-- 'intellij_light',
+-- dir = '~/Development/git/intellij_light.nvim',
+-- config = function()
+-- require('intellij_light').setup()
+-- require('intellij_light').load()
+-- end,
+-- }
 return {
-	{'gilbertfrancois/intellij_light.nvim',
-	config = function()
-		require('intellij_light').setup()
-		require('intellij_light').load()
-		end,
-}
+    {
+        'gilbertfrancois/intellij_light.nvim',
+        config = function()
+            require('intellij_light').setup()
+            require('intellij_light').load()
+        end,
+    },
 }

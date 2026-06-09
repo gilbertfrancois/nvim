@@ -48,6 +48,9 @@ require('lazy').setup({
     require 'kickstart/plugins/treesitter',
 
     require 'kickstart/plugins/intellij_light',
+    require 'kickstart/plugins/cappuchin',
+    -- require 'kickstart/plugins/nord',
+    -- require 'kickstart/plugins/gruvbox',
 
     require 'kickstart/plugins/vimtex',
 

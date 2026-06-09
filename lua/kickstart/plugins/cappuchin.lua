@@ -18,11 +18,6 @@ return {
         },
         config = function(_, opts)
             require('catppuccin').setup(opts)
-
-            local success, _ = pcall(vim.cmd.colorscheme, 'catppuccin-mocha')
-            if not success then
-                vim.cmd.colorscheme 'catppuccin'
-            end
         end,
     },
 }

@@ -105,6 +105,9 @@ require 'lazy-bootstrap'
 -- [[ Configure and install plugins ]]
 require 'lazy-plugins'
 
+-- Apply colorscheme based on terminal light/dark mode
+require('theme').apply()
+
 vim.api.nvim_create_autocmd('FileType', {
     -- Added JS, TS, and React patterns
     pattern = { 'python', 'javascript', 'typescript', 'javascriptreact', 'typescriptreact' },

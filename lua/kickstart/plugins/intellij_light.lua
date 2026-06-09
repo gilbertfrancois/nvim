@@ -9,9 +9,10 @@
 return {
     {
         'gilbertfrancois/intellij_light.nvim',
+        priority = 1000,
+        lazy = false,
         config = function()
             require('intellij_light').setup()
-            require('intellij_light').load()
         end,
     },
 }

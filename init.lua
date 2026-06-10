@@ -105,8 +105,17 @@ require 'lazy-bootstrap'
 -- [[ Configure and install plugins ]]
 require 'lazy-plugins'
 
--- Apply colorscheme based on terminal light/dark mode
 require('theme').apply()
+-- Apply colorscheme after all VimEnter plugins have loaded.
+-- Must be deferred: blink-cmp, which-key, todo-comments load on VimEnter and
+-- overwrite highlight groups. Registering this autocmd after lazy-plugins
+-- ensures it fires last (autocmds fire in registration order).
+-- vim.api.nvim_create_autocmd('VimEnter', {
+--     once = true,
+--     callback = function()
+--         require('theme').apply()
+--     end,
+-- })
 
 vim.api.nvim_create_autocmd('FileType', {
     -- Added JS, TS, and React patterns

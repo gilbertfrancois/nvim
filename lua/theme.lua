@@ -22,6 +22,12 @@ local function gtk_ini_is_dark(content)
     return nil -- unknown
 end
 
+local function is_ssh()
+    return os.getenv 'SSH_CLIENT' ~= nil
+        or os.getenv 'SSH_TTY' ~= nil
+        or os.getenv 'SSH_CONNECTION' ~= nil
+end
+
 local function is_light()
     -- 1. TERM_BACKGROUND env var (kitty, WezTerm, etc.)
     local term_bg = os.getenv 'TERM_BACKGROUND'
@@ -35,19 +41,23 @@ local function is_light()
         return not gtk_theme_env:lower():match 'dark'
     end
 
-    -- 3. XDG Desktop Portal (works on both GNOME and Hyprland with xdg-desktop-portal)
-    --    Returns: 0 = no preference, 1 = prefer dark, 2 = prefer light
-    local portal = vim.fn.system(
-        'gdbus call --session --dest org.freedesktop.portal.Desktop'
-            .. ' --object-path /org/freedesktop/portal/desktop'
-            .. ' --method org.freedesktop.portal.Settings.Read'
-            .. ' org.freedesktop.appearance color-scheme 2>/dev/null'
-    )
-    local scheme = portal:match 'uint32 (%d+)'
-    if scheme == '1' then
-        return false
-    elseif scheme == '2' then
-        return true
+    -- Skip D-Bus/gsettings queries over SSH — no desktop session available,
+    -- and the blocking calls cause a multi-second freeze on startup.
+    if not is_ssh() then
+        -- 3. XDG Desktop Portal (works on both GNOME and Hyprland with xdg-desktop-portal)
+        --    Returns: 0 = no preference, 1 = prefer dark, 2 = prefer light
+        local portal = vim.fn.system(
+            'gdbus call --session --dest org.freedesktop.portal.Desktop'
+                .. ' --object-path /org/freedesktop/portal/desktop'
+                .. ' --method org.freedesktop.portal.Settings.Read'
+                .. ' org.freedesktop.appearance color-scheme 2>/dev/null'
+        )
+        local scheme = portal:match 'uint32 (%d+)'
+        if scheme == '1' then
+            return false
+        elseif scheme == '2' then
+            return true
+        end
     end
 
     -- 4. GTK settings.ini files (standard on Hyprland and other non-GNOME desktops)
@@ -62,18 +72,20 @@ local function is_light()
         end
     end
 
-    -- 5. GNOME gsettings color-scheme (GNOME only)
-    local result = vim.fn.system 'gsettings get org.gnome.desktop.interface color-scheme 2>/dev/null'
-    if result:match 'prefer%-light' then
-        return true
-    elseif result:match 'prefer%-dark' then
-        return false
-    end
+    if not is_ssh() then
+        -- 5. GNOME gsettings color-scheme (GNOME only)
+        local result = vim.fn.system 'gsettings get org.gnome.desktop.interface color-scheme 2>/dev/null'
+        if result:match 'prefer%-light' then
+            return true
+        elseif result:match 'prefer%-dark' then
+            return false
+        end
 
-    -- 6. GNOME GTK theme name: absence of 'dark' implies light
-    local gtk_theme = vim.fn.system 'gsettings get org.gnome.desktop.interface gtk-theme 2>/dev/null'
-    if gtk_theme and gtk_theme ~= '' then
-        return not gtk_theme:lower():match 'dark'
+        -- 6. GNOME GTK theme name: absence of 'dark' implies light
+        local gtk_theme = vim.fn.system 'gsettings get org.gnome.desktop.interface gtk-theme 2>/dev/null'
+        if gtk_theme and gtk_theme ~= '' then
+            return not gtk_theme:lower():match 'dark'
+        end
     end
 
     return false

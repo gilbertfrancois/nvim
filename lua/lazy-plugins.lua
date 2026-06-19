@@ -49,6 +49,7 @@ require('lazy').setup({
 
     require 'kickstart/plugins/intellij_light',
     require 'kickstart/plugins/cappuchin',
+    require 'kickstart/plugins/onedark',
     -- require 'kickstart/plugins/nord',
     -- require 'kickstart/plugins/gruvbox',
 

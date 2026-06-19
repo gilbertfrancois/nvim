@@ -23,9 +23,7 @@ local function gtk_ini_is_dark(content)
 end
 
 local function is_ssh()
-    return os.getenv 'SSH_CLIENT' ~= nil
-        or os.getenv 'SSH_TTY' ~= nil
-        or os.getenv 'SSH_CONNECTION' ~= nil
+    return os.getenv 'SSH_CLIENT' ~= nil or os.getenv 'SSH_TTY' ~= nil or os.getenv 'SSH_CONNECTION' ~= nil
 end
 
 local function is_light()
@@ -97,7 +95,7 @@ function M.apply()
         pcall(vim.cmd.colorscheme, 'intellij_light')
     else
         vim.o.background = 'dark'
-        pcall(vim.cmd.colorscheme, 'catppuccin-mocha')
+        pcall(vim.cmd.colorscheme, 'onedark')
     end
 end
 

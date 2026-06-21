@@ -27,18 +27,6 @@ local function is_ssh()
 end
 
 local function is_light()
-    -- 1. TERM_BACKGROUND env var (kitty, WezTerm, etc.)
-    local term_bg = os.getenv 'TERM_BACKGROUND'
-    if term_bg then
-        return term_bg == 'light'
-    end
-
-    -- 2. GTK_THEME env var (commonly set on Hyprland)
-    local gtk_theme_env = os.getenv 'GTK_THEME'
-    if gtk_theme_env then
-        return not gtk_theme_env:lower():match 'dark'
-    end
-
     -- Over SSH: no desktop session, so skip all D-Bus/gsettings calls.
     -- Instead rely on Neovim's own OSC 11 terminal query (vim.o.background),
     -- which travels transparently through the SSH connection to the local terminal.
@@ -46,8 +34,10 @@ local function is_light()
         return vim.o.background == 'light'
     end
 
-    -- 3. XDG Desktop Portal (works on both GNOME and Hyprland with xdg-desktop-portal)
+    -- 1. XDG Desktop Portal (works on both GNOME and Hyprland with xdg-desktop-portal)
     --    Returns: 0 = no preference, 1 = prefer dark, 2 = prefer light
+    --    Checked first because it always reflects the live desktop state.
+    --    TERM_BACKGROUND is set once at login and can be stale after a theme switch.
     local portal = vim.fn.system(
         'gdbus call --session --dest org.freedesktop.portal.Desktop'
             .. ' --object-path /org/freedesktop/portal/desktop'
@@ -59,6 +49,18 @@ local function is_light()
         return false
     elseif scheme == '2' then
         return true
+    end
+
+    -- 2. TERM_BACKGROUND env var (kitty, WezTerm — set dynamically per window by those terminals)
+    local term_bg = os.getenv 'TERM_BACKGROUND'
+    if term_bg then
+        return term_bg == 'light'
+    end
+
+    -- 3. GTK_THEME env var (commonly set on Hyprland)
+    local gtk_theme_env = os.getenv 'GTK_THEME'
+    if gtk_theme_env then
+        return not gtk_theme_env:lower():match 'dark'
     end
 
     -- 4. GTK settings.ini files (standard on Hyprland and other non-GNOME desktops)

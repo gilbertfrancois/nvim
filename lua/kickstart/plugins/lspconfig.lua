@@ -20,22 +20,7 @@ return {
         init = function()
             local border = 'rounded'
 
-            -- Neovim ≥ 0.11: default border for most floats
-            -- if vim.fn.has 'nvim-0.11' == 1 then
-            --     vim.o.winborder = border
-            -- end
-
-            -- Handler keys for 0.11+ (prevents “deprecated” warning)
-            local M = vim.lsp.protocol.Methods
-            local hover = vim.lsp.handlers.hover
-            local sig = vim.lsp.handlers.signature_help
-            if vim.fn.has 'nvim-0.11' == 1 then
-                vim.lsp.handlers[M.textDocument_hover] = vim.lsp.with(hover, { border = border })
-                vim.lsp.handlers[M.textDocument_signatureHelp] = vim.lsp.with(sig, { border = border })
-            else
-                vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(hover, { border = border })
-                vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(sig, { border = border })
-            end
+            vim.o.winborder = border
 
             -- Fallback: force a border for any LSP float opened via open_floating_preview
             local orig = vim.lsp.util.open_floating_preview
@@ -60,8 +45,8 @@ return {
             -- Automatically install LSPs and related tools to stdpath for Neovim
             -- Mason must be loaded before its dependents so we need to set it up here.
             -- NOTE: `opts = {}` is the same as calling `require('mason').setup({})`
-            { 'williamboman/mason.nvim', opts = { ui = { border = 'rounded' } } },
-            'williamboman/mason-lspconfig.nvim',
+            { 'mason-org/mason.nvim', opts = { ui = { border = 'rounded' } } },
+            'mason-org/mason-lspconfig.nvim',
             'WhoIsSethDaniel/mason-tool-installer.nvim',
 
             -- Useful status updates for LSP.

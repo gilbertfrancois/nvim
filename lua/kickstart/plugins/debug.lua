@@ -7,7 +7,7 @@ return {
         'nvim-neotest/nvim-nio',
         'theHamsta/nvim-dap-virtual-text',
         -- Installs the debug adapters for you
-        'williamboman/mason.nvim',
+        'mason-org/mason.nvim',
         'jay-babu/mason-nvim-dap.nvim',
 
         -- Language specific debuggers
